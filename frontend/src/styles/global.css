@@ -1,0 +1,76 @@
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --sidebar-start: #0f0f23;
+  --sidebar-end: #1a1145;
+  --bg-main: #f8f9fb;
+  --bg-card: #ffffff;
+  --user-bubble: #6366f1;
+  --assistant-bubble: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar scrollbar */
+.ant-layout-sider ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ant-layout-sider ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Sidebar shadow */
+.ant-layout-sider {
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Textarea fix */
+.ant-input-textarea textarea {
+  resize: none !important;
+}
+
+/* Smooth transitions for interactive elements */
+.ant-btn {
+  transition: all 0.2s ease !important;
+}

@@ -1,0 +1,23 @@
+# Web framework
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+
+# DB & auth
+aiosqlite>=0.20
+PyJWT>=2.8
+bcrypt>=4.1
+python-dotenv>=1.0
+
+# LangGraph / LLM
+langgraph>=0.2.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+
+# Web research (new capability)
+ddgs>=6.0            # DuckDuckGo search (import fallback to duckduckgo_search)
+trafilatura>=1.8     # main-content extraction from web pages
+beautifulsoup4>=4.12 # fallback HTML parsing
+lxml>=5.0
+httpx>=0.27
+requests>=2.31
