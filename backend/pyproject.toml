@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cortex-backend"
+version = "0.1.0"
+description = "Cortex 后端 —— FastAPI + LangGraph 多能力对话系统"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "python-multipart>=0.0.9",
+    "aiosqlite>=0.20",
+    "PyJWT>=2.8",
+    "bcrypt>=4.1",
+    "python-dotenv>=1.0",
+    "langgraph>=0.2.0",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "ddgs>=6.0",
+    "trafilatura>=1.8",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "httpx>=0.27",
+    "requests>=2.31",
+]
+
+# 后端是「扁平模块集」（main.py / db.py / graph/ / routers/ ...），
+# 用 py-modules + packages 显式声明，让它可被 CLI 的 LocalEngine import。
+[tool.setuptools]
+py-modules = [
+    "main", "config", "logger", "db", "auth", "init_admin",
+    "llm_queue", "llm", "schemas", "wiki_service", "chat_runner", "media",
+]
+
+[tool.setuptools.packages.find]
+include = ["graph*", "routers*", "tools*"]

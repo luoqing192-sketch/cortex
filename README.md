@@ -9,13 +9,27 @@ Cortex 是 `llm_test` 的 Python/LangGraph 重构版：完整保留原有能力�
 - 🧭 **意图分类路由（LangGraph）** — LLM 对消息分类（含上下文）→ 四路分发
 - 📚 **知识问答** — Wiki 知识库，LLM tool-call agent 自动检索 markdown 文档并带引用
 - 🛠️ **代码生成与预览** — 6 个工具的 tool-call 循环，隔离目录 `demo_code/{convId}` + 动态预览 URL + iframe
-- 🌐 **网络研究（新增）** — DuckDuckGo 联网搜索 + 网页正文抽取（trafilatura）+ 结构化总结分析 + 来源引用
+- 🌐 **网络研究** — DuckDuckGo 联网搜索 + 网页正文抽取（trafilatura）+ 结构化总结分析 + 来源引用
+- 🖼️ **多模态图片输入** — 对话中携带图片（上传/粘贴/`--image`），存磁盘+引用，转 vision content blocks
+- 🖥️ **终端 CLI** — 双模（remote/local）交互式 REPL + 一次性命令 + 可脚本化（`--json`/管道），见 [`cli/`](./cli/README.md)
 - 💬 **多对话并行流式** — SSE，按 `conversationId` 隔离，切换对话不中断后台流
 - 🧠 **上下文记忆** — Token-aware 截断 + 最多 20 条历史
 - 🔐 **用户隔离** — JWT 认证，conversation/message 按 user_id 隔离
 - ⚙️ **动态配置** — 管理后台实时切换 LLM 模型、Prompt 模板
 - 🚦 **LLM 请求队列** — asyncio 并发控制 + 入队超时
 - 📝 **文件日志** — 终端 + `app.log`，10MB 自动轮转
+
+## 🖥️ CLI 用法（速览）
+
+```bash
+pip install -e cli/                       # 远程模式；local 离线再装 pip install -e backend/
+cortex login                              # admin / 123456
+cortex chat "帮我做一个 TodoList 页面"       # 一次性流式
+cortex chat                               # 进交互式 REPL
+cortex chat --image pic.png "这张图是什么"   # 多模态（需 vision 模型）
+cortex chat --json "联网查 X" | jq          # 脚本化
+```
+完整命令见 [cli/README.md](./cli/README.md)。
 
 ## 🧱 技术栈
 

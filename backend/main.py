@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
 
-from config import DEMO_CODE_DIR, FRONTEND_DIST
+from config import DEMO_CODE_DIR, FRONTEND_DIST, UPLOADS_DIR
 from db import close_conn, init_db
 from init_admin import ensure_admin_user
 from logger import logger
@@ -83,6 +83,10 @@ async def add_preview_headers(request: Request, call_next):
 
 app.mount("/preview", preview_app, name="preview")
 
+# ---- 上传图片静态服务（供前端 <img src> 与模型 http url 引用）----
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
+
 # ---- 前端静态资源 ----
 if FRONTEND_DIST.exists():
     app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
@@ -93,7 +97,7 @@ else:
 # ---- SPA fallback（非 /api、非 /preview 的 HTML 请求返回 index.html）----
 @app.get("/{full_path:path}")
 async def spa_fallback(full_path: str):
-    if full_path.startswith(("api/", "preview/")):
+    if full_path.startswith(("api/", "preview/", "uploads/")):
         return JSONResponse({"error": "Not found"}, status_code=404)
     index = FRONTEND_DIST / "index.html"
     if index.exists():

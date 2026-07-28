@@ -17,12 +17,21 @@ export interface Conversation {
   updated_at: string;
 }
 
+export interface Attachment {
+  type: 'image' | 'file';
+  name?: string;
+  path?: string;
+  url?: string;
+  mime?: string;
+}
+
 export interface Message {
   id: number;
   conversation_id: number;
   role: 'user' | 'assistant' | 'system';
   content: string;
   created_at: string;
+  attachments?: Attachment[] | string | null;
 }
 
 export interface LLMSettings {

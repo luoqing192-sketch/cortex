@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS messages (
   conversation_id INTEGER NOT NULL,
   role TEXT NOT NULL,
   content TEXT NOT NULL,
+  attachments TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
 );
@@ -111,9 +112,19 @@ async def execute(sql: str, params: tuple = ()) -> tuple[int, int]:
     return cur.lastrowid, cur.rowcount
 
 
+async def _migrate(conn) -> None:
+    """幂等迁移：给旧库补列。"""
+    async with conn.execute("PRAGMA table_info(messages)") as cur:
+        cols = {row[1] for row in await cur.fetchall()}
+    if "attachments" not in cols:
+        await conn.execute("ALTER TABLE messages ADD COLUMN attachments TEXT")
+        logger.info("[migrate] messages.attachments 列已添加")
+
+
 async def init_db() -> None:
     conn = await get_conn()
     await conn.executescript(SCHEMA_SQL)
+    await _migrate(conn)
     await conn.commit()
 
     # 默认设置（存在则忽略）

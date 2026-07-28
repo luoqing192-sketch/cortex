@@ -9,15 +9,30 @@ from langchain_core.messages import (
     ToolMessage,
 )
 
+from media import build_multimodal_content
+
 Emit = Callable[[dict], Awaitable[None]]
 
 
+def _parse_attachments(raw) -> list[dict]:
+    if not raw:
+        return []
+    if isinstance(raw, list):
+        return raw
+    try:
+        return json.loads(raw) or []
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+
 def to_lc_messages(system: str, history: list[dict]) -> list:
+    """构造 LangChain 消息。带图片附件的 user 消息会转成多模态 content blocks。"""
     msgs: list = [SystemMessage(content=system)]
     for m in history:
         role, content = m.get("role"), m.get("content") or ""
         if role == "user":
-            msgs.append(HumanMessage(content=content))
+            attachments = _parse_attachments(m.get("attachments"))
+            msgs.append(HumanMessage(content=build_multimodal_content(content, attachments)))
         elif role == "assistant":
             msgs.append(AIMessage(content=content))
         elif role == "system":

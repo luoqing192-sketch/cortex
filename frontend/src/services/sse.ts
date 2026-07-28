@@ -1,4 +1,4 @@
-import type { ChatStreamEvent, Source } from '@/types';
+import type { ChatStreamEvent, Source, Attachment } from '@/types';
 
 export interface StreamCallbacks {
   onChunk: (content: string) => void;
@@ -14,9 +14,15 @@ export interface StreamCallbacks {
 export async function streamChat(
   conversationId: number,
   message: string,
-  callbacks: StreamCallbacks
+  callbacks: StreamCallbacks,
+  attachments?: Attachment[]
 ): Promise<void> {
   const token = localStorage.getItem('token');
+
+  const body: Record<string, unknown> = { conversationId, message };
+  if (attachments && attachments.length > 0) {
+    body.attachments = attachments;
+  }
 
   const response = await fetch('/api/chat', {
     method: 'POST',
@@ -24,7 +30,7 @@ export async function streamChat(
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify({ conversationId, message }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

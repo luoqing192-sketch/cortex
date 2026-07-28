@@ -19,6 +19,13 @@ backend/uploads/
 frontend/node_modules/
 frontend/dist/
 
+# CLI build / test artifacts
+cli/build/
+cli/*.egg-info/
+.pytest_cache/
+.cortex/
+.clitest/
+
 # OS / IDE
 .DS_Store
 .idea/

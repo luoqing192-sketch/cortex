@@ -47,14 +47,24 @@ async def delete_conversation(conversation_id: int, user: dict = Depends(get_cur
     return {"message": "对话已删除"}
 
 
+_IMAGE_MIMES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
+_MAX_UPLOAD = 10 * 1024 * 1024  # 10MB
+
+
 @router.post("/chat/upload")
 async def chat_upload(file: UploadFile = File(...), _user: dict = Depends(get_current_user)):
     if not file.filename:
         raise HTTPException(status_code=400, detail="没有上传文件")
+    data = await file.read()
+    if len(data) > _MAX_UPLOAD:
+        raise HTTPException(status_code=400, detail="文件超过 10MB 上限")
+
     unique = f"{int(time.time() * 1000)}-{file.filename}"
     dest = UPLOADS_DIR / unique
-    data = await file.read()
     dest.write_bytes(data)
+
+    mime = file.content_type or ""
+    is_image = mime in _IMAGE_MIMES
     return {
         "message": "文件上传成功",
         "file": {
@@ -63,5 +73,9 @@ async def chat_upload(file: UploadFile = File(...), _user: dict = Depends(get_cu
             "original_name": file.filename,
             "size": len(data),
             "path": str(dest),
+            "url": f"/uploads/{unique}",
+            "mime": mime,
+            "is_image": is_image,
+            "type": "image" if is_image else "file",
         },
     }

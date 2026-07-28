@@ -80,7 +80,7 @@ export default function MessageList() {
       }}
     >
       {(messages || []).map((msg) => (
-        <MessageBubble key={msg.id} role={msg.role} content={msg.content} time={msg.created_at} />
+        <MessageBubble key={msg.id} role={msg.role} content={msg.content} time={msg.created_at} attachments={msg.attachments} />
       ))}
 
       {isStreaming && ragNotice && (
@@ -121,18 +121,29 @@ export default function MessageList() {
   );
 }
 
+function normalizeAttachments(raw: any): { type?: string; url?: string; name?: string }[] {
+  if (!raw) return [];
+  if (typeof raw === 'string') {
+    try { return JSON.parse(raw) || []; } catch { return []; }
+  }
+  return Array.isArray(raw) ? raw : [];
+}
+
 function MessageBubble({
   role,
   content,
   time,
   isStreaming,
+  attachments,
 }: {
   role: string;
   content: string;
   time?: string;
   isStreaming?: boolean;
+  attachments?: any;
 }) {
   const isUser = role === 'user';
+  const imgs = normalizeAttachments(attachments).filter((a) => a.type === 'image' && a.url);
 
   return (
     <div style={{
@@ -153,25 +164,43 @@ function MessageBubble({
       )}
 
       <div style={{ maxWidth: '70%' }}>
-        <div style={{
-          padding: '12px 16px',
-          borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-          background: isUser ? 'var(--user-bubble)' : 'var(--assistant-bubble)',
-          color: isUser ? '#fff' : 'var(--text-primary)',
-          lineHeight: 1.7,
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-          fontSize: 14,
-          boxShadow: isUser ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.06)',
-          border: isUser ? 'none' : '1px solid var(--border)',
-          transition: 'all 0.15s ease',
-        }}>
-          {isStreaming && !content ? (
-            <LoadingOutlined style={{ color: 'var(--text-muted)', fontSize: 16 }} />
-          ) : (
-            content
-          )}
-        </div>
+        {imgs.length > 0 && (
+          <div style={{
+            display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: content ? 8 : 0,
+            justifyContent: isUser ? 'flex-end' : 'flex-start',
+          }}>
+            {imgs.map((img, i) => (
+              <a key={i} href={img.url} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={img.url}
+                  alt={img.name || 'image'}
+                  style={{ maxWidth: 200, maxHeight: 200, borderRadius: 10, border: '1px solid var(--border)', display: 'block' }}
+                />
+              </a>
+            ))}
+          </div>
+        )}
+        {(content || (isStreaming && !content)) && (
+          <div style={{
+            padding: '12px 16px',
+            borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+            background: isUser ? 'var(--user-bubble)' : 'var(--assistant-bubble)',
+            color: isUser ? '#fff' : 'var(--text-primary)',
+            lineHeight: 1.7,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            fontSize: 14,
+            boxShadow: isUser ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.06)',
+            border: isUser ? 'none' : '1px solid var(--border)',
+            transition: 'all 0.15s ease',
+          }}>
+            {isStreaming && !content ? (
+              <LoadingOutlined style={{ color: 'var(--text-muted)', fontSize: 16 }} />
+            ) : (
+              content
+            )}
+          </div>
+        )}
         {time && (
           <Typography.Text
             style={{

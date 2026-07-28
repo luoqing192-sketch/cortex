@@ -36,6 +36,7 @@ class ConversationCreateBody(BaseModel):
 class ChatBody(BaseModel):
     conversationId: int
     message: str
+    attachments: list[dict] | None = None  # [{type:"image", path, url, mime, name}]
 
 
 class WikiOrganizeBody(BaseModel):
