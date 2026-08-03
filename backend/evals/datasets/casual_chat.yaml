@@ -1,0 +1,33 @@
+# 闲聊拒绝评测 —— casual_chat 路由应返回拒绝文本 + 功能引导。
+# 拒绝文本是节点内直接输出的常量，命中 casual 分类后无需再走 LLM。
+suite: casual_chat
+route: casual_chat
+
+cases:
+  - id: casual-greeting-001
+    tags: [casual]
+    input:
+      message: "在吗？陪我聊聊天吧"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: casual_chat}}
+        - {name: must_contain, args: {value: "不支持闲聊"}}
+        - {name: must_contain, args: {values: ["知识库问答", "页面生成"]}}
+
+  - id: casual-smalltalk-002
+    tags: [casual]
+    input:
+      message: "你觉得今晚吃什么好"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: casual_chat}}
+        - {name: must_contain, args: {value: "功能"}}
+
+  - id: casual-weather-003
+    tags: [casual]
+    input:
+      message: "讲个笑话听听"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: casual_chat}}
+        - {name: must_not_contain, args: {value: "Traceback"}}

@@ -12,6 +12,7 @@ from cortex_cli.commands import auth, chat
 from cortex_cli.commands.conv import conv_app
 from cortex_cli.commands.config_cmd import config_app
 from cortex_cli.commands.stubs import skill_app, mcp_app, schedule_app
+from cortex_cli.commands.eval_cmd import eval_app
 
 # UTF-8 for Windows console
 if sys.platform == "win32":
@@ -53,6 +54,7 @@ app.add_typer(config_app, name="config")
 app.add_typer(skill_app, name="skill")
 app.add_typer(mcp_app, name="mcp")
 app.add_typer(schedule_app, name="schedule")
+app.add_typer(eval_app, name="eval")
 
 
 if __name__ == "__main__":

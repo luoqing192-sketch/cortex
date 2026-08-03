@@ -1,0 +1,39 @@
+# 代码生成评测 —— 断言 tool-call 循环、产物文件、preview 事件。
+# 需配置可用 LLM（真实跑 tool-call 循环）；无 key 时 no_error/文件类断言会失败（预期）。
+suite: generate_page
+route: generate_page
+
+cases:
+  - id: gen-todolist-001
+    tags: [codegen, html]
+    input:
+      message: "帮我生成一个简单的 TodoList 页面，纯 HTML/CSS/JS"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: generate_page}}
+        - {name: tool_called, args: {tool: generate_code}}
+        - {name: preview_emitted, args: {}}
+        - {name: file_exists, args: {path: index.html}}
+        - {name: html_parses, args: {path: index.html}}
+        - {name: no_error, args: {}}
+
+  - id: gen-landing-002
+    tags: [codegen, html]
+    input:
+      message: "做一个产品落地页，带标题、特性列表和联系按钮"
+    expected:
+      graders:
+        - {name: tool_called, args: {tool: generate_code}}
+        - {name: file_exists, args: {path: index.html}}
+        - {name: html_parses, args: {path: index.html}}
+        - {name: preview_emitted, args: {}}
+
+  - id: gen-calc-003
+    tags: [codegen, interactive]
+    input:
+      message: "写一个网页计算器，支持加减乘除"
+    expected:
+      graders:
+        - {name: tool_called, args: {tool: generate_code}}
+        - {name: file_exists, args: {path: index.html}}
+        - {name: no_error, args: {}}

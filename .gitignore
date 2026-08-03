@@ -11,6 +11,7 @@ backend/.env
 
 # Runtime data
 backend/cortex.db
+backend/eval.db
 backend/app.log
 backend/demo_code/
 backend/uploads/

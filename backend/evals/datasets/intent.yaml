@@ -1,0 +1,56 @@
+# 意图分类评测 —— 断言 classify 节点产出的 intent 事件是否正确。
+# 注：需配置可用 LLM（classify 是一次真实 LLM 调用）；无 key 时会 fallback 到 knowledge_qa。
+suite: intent
+route: intent
+
+cases:
+  - id: intent-web-001
+    tags: [web, zh]
+    input:
+      message: "联网查一下 LangGraph 的最新特性并总结"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: web_research}}
+
+  - id: intent-web-002
+    tags: [web, url]
+    input:
+      message: "帮我读一下这个链接 https://example.com/doc 并分析要点"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: web_research}}
+
+  - id: intent-gen-001
+    tags: [codegen]
+    input:
+      message: "帮我做一个 TodoList 页面"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: generate_page}}
+
+  - id: intent-gen-002-multiturn
+    tags: [codegen, multiturn]
+    input:
+      seed_history:
+        - {role: user, content: "帮我做一个登录页面"}
+        - {role: assistant, content: "已为你生成登录页面。"}
+      message: "把按钮颜色改成蓝色"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: generate_page}}
+
+  - id: intent-kqa-001
+    tags: [knowledge]
+    input:
+      message: "推荐系统的打散策略是怎么做的？"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: knowledge_qa}}
+
+  - id: intent-casual-001
+    tags: [casual]
+    input:
+      message: "你好呀，今天天气怎么样"
+    expected:
+      graders:
+        - {name: intent_match, args: {expected: casual_chat}}

@@ -35,4 +35,7 @@ py-modules = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["graph*", "routers*", "tools*"]
+include = ["graph*", "routers*", "tools*", "evals*"]
+
+[tool.setuptools.package-data]
+evals = ["datasets/*.yaml"]
